@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html class="js-unavailable" lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kerbal Space Program Save File Reader & Writer › Calvinmois.es</title>
+<link rel="shortcut icon" type="image/png" href="/favicon.ico">
+<link rel="stylesheet" href="//calvinmois.es/css/style.css">
+<link rel="stylesheet" href="./index.css">
+</head>
+<body class="black text-white">
+<!-- <a class="sr-only sr-only-focusable" href="#content">Skip to Content</a> -->
+
+<header class="header">
+	<h1>Kerbal Space Program Save File Reader & Writer</h1>
+</header>
+
+<main class="main">
+
+</main>
+
+<footer class="footer text-grey-dark">
+	<small class="copyright">
+		&copy; <time id="copyright-year" datetime="2023">2023</time>
+		calvin mois&eacute;s ju&aacute;rez. All rights reserved.
+	</small>
+</footer>
+
+<div id="scripts" hidden>
+<script>
+//! INIT ON READY
+document.addEventListener('DOMContentLoaded', () => {
+	//! -- Disable Unlinked Links
+	function _preventDefault(e) { e.preventDefault() } // to allow removing, make a reference to this fn available on `window` or somewhere
+	document.querySelectorAll('a[href="#"],a[href="."],a[href="./"]').forEach(unlink => unlink.addEventListener('click', _preventDefault))
+	//! -- Remove `.js-unavailable` Class
+	document.documentElement.classList.remove('js-unavailable')
+	//! -- Update Copyright Year
+	const currentYear = (new Date()).getFullYear()
+	const $copyrightYear = document.body.querySelector('#copyright-year')
+	$copyrightYear.textContent = currentYear
+	$copyrightYear.setAttribute('datetime', currentYear)
+})
+</script>
+<script type="module" src="index.js"></script>
+</div>
+</div>
+</body>
+</html>
