@@ -15,6 +15,8 @@ export default class KSPSFSReader extends EventTarget {
 
 	setContent(content) {
 		this.#content = content
+
+		return this
 	}
 
 	async parse(content) {
