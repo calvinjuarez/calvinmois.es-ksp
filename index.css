@@ -63,37 +63,41 @@ hr[aria-label]::before {
 
 .explore {}
 
-.explore-nav {
+.explore-list {
+	list-style-type: none;
+	padding: unset;
 	width: 50%;
 	overflow: auto;
 	border-right: 2px solid var(--color-grey);
 }
-.explore-nav-list {
-	list-style-type: none;
-	padding: unset;
-}
-.explore-nav-list-item {}
-
-.explore-nav-link {
+.explore-list-item {}
+.explore-list-item-inner {
 	display: block;
 	padding: 4px 16px;
-	color: var(--color-white)
+	color: var(--color-white);
 }
-.explore-nav-link:hover {
-	color: var(--color-gray-light);
+
+/*.explore-list-item-inner*/.explore-link {
+	display: flex;
 }
-.explore-nav-item-name,
-.explore-nav-item-value {
+/*.explore-list-item-inner*/.explore-link:hover {
+	color: var(--color-grey-light);
+}
+.explore-item-name,
+.explore-item-value {
 	display: block;
 }
-.explore-nav-item-name {
+.explore-item-name {
 	flex: 1 0 auto;
 }
-.explore-nav-item-value {
+.explore-item-value {
 	flex: 0 0 auto;
 	margin-left: 16px;
 }
+.explore-item-value:not(.explore-link *) {
+	color: var(--color-grey-light);
+}
 
-.explore-nav-list-item.is-nested .explore-nav-link {
-	display: flex;
+.explore-link .explore-item-name {
+	font-weight: bold;
 }

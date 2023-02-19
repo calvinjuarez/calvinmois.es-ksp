@@ -1,6 +1,6 @@
 import _AbstractComponent from './_AbstractComponent.js'
 
-import ExploreNav from './ExploreNav.js'
+import ExploreList from './ExploreList.js'
 
 
 export default class Explore extends _AbstractComponent {
@@ -8,7 +8,7 @@ export default class Explore extends _AbstractComponent {
 
 	get childConstructors() {
 		return {
-			nav: [ ExploreNav ],
+			nav: [ ExploreList ],
 		}
 	}
 	get elementToChild() {

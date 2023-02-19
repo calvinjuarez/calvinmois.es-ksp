@@ -51,9 +51,7 @@ export default class App extends _AbstractComponent {
 					value,
 				}
 
-				if (typeof value === 'object') {
-					data.isNested = true
-				}
+				data.isNested = (typeof value === 'object')
 
 				collection.push(data)
 			})
@@ -68,7 +66,7 @@ export default class App extends _AbstractComponent {
 	async #handleUploadChange(e) {
 		const { content } = e.detail
 
-		await this.reader.parse(content)
+		const data = await this.reader.parse(content)
 
 		this.children.explore.collection = this.#buildExploreCollection()
 	}
