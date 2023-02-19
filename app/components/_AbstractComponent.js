@@ -94,7 +94,7 @@ export default class _AbstractComponent extends EventTarget {
 
 		childConstructorsEntries.forEach(([ childKey, constructor ]) => {
 			if (Array.isArray(constructor)) {
-				this.#buildRepeatableChild(childKey, constructor[0])
+				this.#buildRepeatableChildren(childKey, constructor[0])
 			}
 			else {
 				this.#buildSingleChild(childKey, constructor)
@@ -102,7 +102,7 @@ export default class _AbstractComponent extends EventTarget {
 		})
 	}
 
-	#buildRepeatableChild(childKey, constructor) {
+	#buildRepeatableChildren(childKey, constructor) {
 		if (constructor.length > 1) {
 			throw new ComponentChildError(`Cannot have multiple constructors in childConstructor repeatable syntax`)
 		}
@@ -110,21 +110,21 @@ export default class _AbstractComponent extends EventTarget {
 		const childSet = this.children[childKey] = new ComponentChildSet()
 
 		this.#collection.forEach((data, index) => {
-			if (Array.isArray(data)) {
-				childSet.add(new constructor({ collection: data, index }))
-			}
-			else {
-				childSet.add(new constructor({ data, index }))
-			}
+			const defaultOptions = Array.isArray(data)
+				? { collection: data, index }
+				: { data, index }
+			const options = this.buildChildOptions(childKey, constructor, defaultOptions)
+			const _constructor = this.#resolveChildConstructor(constructor, options)
+
+			childSet.add(new _constructor(options))
 		})
 	}
 
 	#buildSingleChild(childKey, constructor) {
-		if (typeof constructor !== 'function') {
-			throw new ComponentChildError(`Invalid constructor for child "${childKey}"`)
-		}
+		const options = this.buildChildOptions(childKey, constructor, {})
+		const _constructor = this.#resolveChildConstructor(constructor, options)
 
-		this.children[childKey] = new constructor()
+		this.children[childKey] = new _constructor(options)
 	}
 
 	#fireLifecycle(event, options) {
@@ -156,6 +156,10 @@ export default class _AbstractComponent extends EventTarget {
 
 				return error
 			})
+	}
+
+	#isComponentConstructor(constructor) {
+		return constructor.prototype instanceof _AbstractComponent
 	}
 
 	#mountChild(child, $element) {
@@ -193,7 +197,20 @@ export default class _AbstractComponent extends EventTarget {
 		})
 	}
 
-	#resolve() {
+	#resolveChildConstructor(constructor, options={}) {
+		if (! this.#isComponentConstructor(constructor)
+		&&  typeof constructor === 'function') {
+			constructor = constructor.call(this, options)
+		}
+
+		if (! this.#isComponentConstructor(constructor)) {
+			throw new ComponentChildError(`Cannot construct non-component child`)
+		}
+
+		return constructor
+	}
+
+	#resolveDOM() {
 		this.#fireLifecycle('resolve:start')
 
 		this.#resolveElements()
@@ -250,6 +267,10 @@ export default class _AbstractComponent extends EventTarget {
 			.catch(() => this.#loadReject())
 	}
 
+	buildChildOptions(childKey, constructor, defaultOptions={}) {
+		return defaultOptions
+	}
+
 	mount($mount) {
 		this.$mount = $mount
 
@@ -260,7 +281,7 @@ export default class _AbstractComponent extends EventTarget {
 
 			this.#buildChildren()
 
-			this.#resolve()
+			this.#resolveDOM()
 
 			this.$mount.append(this.$doc)
 
