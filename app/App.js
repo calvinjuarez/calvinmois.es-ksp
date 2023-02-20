@@ -61,6 +61,37 @@ export default class App extends _AbstractComponent {
 					value,
 				}
 
+				const buildList = (values, nameKey) => new ExploreListCollection(
+					{ depth: 1 + depth },
+					...values.map(value => ({
+						isGroup: true,
+						isList: false,
+						name: value[nameKey || 'name'],
+						value: this.#buildExploreSubCollection(value, 2 + depth),
+					})),
+				)
+
+				if (data.isList) {
+					switch (name) {
+						case 'KERBAL':
+						case 'MODULE':
+						case 'PART':
+						case 'SCENARIO':
+						case 'VESSEL': {
+							data.value = buildList(data.value)
+							break
+						}
+						case 'MESSAGE': {
+							data.value = buildList(data.value, 'title')
+							break
+						}
+						case 'STOREDPART': {
+							data.value = buildList(data.value, 'partName')
+							break
+						}
+						default: { break }
+					}
+				}
 				if (data.isGroup) {
 					data.value = this.#buildExploreSubCollection(value, 1 + depth)
 				}
