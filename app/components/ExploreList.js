@@ -10,9 +10,7 @@ export default class ExploreList extends _AbstractComponent {
 	get childConstructors() {
 		return {
 			items: [ options => {
-				console.log()
-
-				return options.data.isGroup
+				return options.data.isGroup || options.data.isList
 					? ExploreGroup
 					: ExploreItem
 			} ],

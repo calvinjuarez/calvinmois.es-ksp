@@ -40,10 +40,10 @@ export default class App extends _AbstractComponent {
 	}
 
 
-	#buildExploreSubCollection() {
+	#buildExploreSubCollection(level) {
 		const collection = []
 
-		Object.entries(this.reader.data['GAME'])
+		Object.entries(level)
 			.sort()
 			.forEach(([ name, value ]) => {
 				const data = {
@@ -51,7 +51,12 @@ export default class App extends _AbstractComponent {
 					value,
 				}
 
-				data.isNested = (typeof value === 'object')
+				data.isList = Array.isArray(value)
+				data.isGroup = ! data.isList && (typeof value === 'object')
+
+				if (data.isGroup) {
+					data.value = this.#buildExploreSubCollection(value)
+				}
 
 				collection.push(data)
 			})
@@ -60,7 +65,7 @@ export default class App extends _AbstractComponent {
 	}
 
 	#buildExploreCollection() {
-		return [ this.#buildExploreSubCollection() ]
+		return [ this.#buildExploreSubCollection(this.reader.data['GAME']) ]
 	}
 
 	async #handleUploadChange(e) {
