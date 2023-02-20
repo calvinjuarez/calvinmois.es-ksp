@@ -62,6 +62,7 @@ export default class _AbstractComponent extends EventTarget {
 		super(...arguments)
 
 		this.fireWithMethod('construct:start')
+
 		this.options = { ...options }
 
 
@@ -255,6 +256,7 @@ export default class _AbstractComponent extends EventTarget {
 			})
 			.catch(() => this.#loadReject())
 	}
+
 
 	buildChildOptions(childKey, constructor, defaultOptions={}) {
 		return defaultOptions

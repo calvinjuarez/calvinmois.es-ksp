@@ -8,12 +8,12 @@ export default class Explore extends _AbstractComponent {
 
 	get childConstructors() {
 		return {
-			nav: [ ExploreList ],
+			list: [ ExploreList ],
 		}
 	}
 	get elementToChild() {
 		return {
-			$explore: 'nav',
+			$explore: 'list',
 		}
 	}
 	get elements() {
