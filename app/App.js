@@ -3,6 +3,9 @@ import _AbstractComponent from './components/_AbstractComponent.js'
 import Upload from './components/Upload.js'
 import Explore from './components/Explore.js'
 
+import ExploreCollection from './data/ExploreCollection.js'
+import ExploreListCollection from './data/ExploreListCollection.js'
+
 
 /**
  * @param {object}  options
@@ -43,32 +46,35 @@ export default class App extends _AbstractComponent {
 	}
 
 
-	#buildExploreSubCollection(level) {
-		const collection = []
+	#buildExploreSubCollection(level, depth=0) {
+		const collection = new ExploreListCollection({ depth })
 
 		Object.entries(level)
 			.sort()
 			.forEach(([ name, value ]) => {
+				const isList = Array.isArray(value)
+				const isGroup = ! isList && (typeof value === 'object')
 				const data = {
+					isGroup,
+					isList,
 					name,
 					value,
 				}
 
-				data.isList = Array.isArray(value)
-				data.isGroup = ! data.isList && (typeof value === 'object')
-
 				if (data.isGroup) {
-					data.value = this.#buildExploreSubCollection(value)
+					data.value = this.#buildExploreSubCollection(value, 1 + depth)
 				}
 
 				collection.push(data)
 			})
 
+		collection.depth = depth
+
 		return collection
 	}
 
 	#buildExploreCollection() {
-		return [ this.#buildExploreSubCollection(this.reader.data['GAME']) ]
+		return new ExploreCollection(null, this.#buildExploreSubCollection(this.reader.data['GAME']))
 	}
 
 	async #handleUploadChange(e) {
