@@ -1,5 +1,5 @@
 import loadTemplate from '../util/loadTemplate.js'
-import eventNameToMethodName from '../util/eventNameToMethodName.js'
+import fireWithMethod from '../util/fireWithMethod.js'
 
 
 class ComponentTemplateError extends Error {}
@@ -61,9 +61,9 @@ export default class _AbstractComponent extends EventTarget {
 	constructor(options) {
 		super(...arguments)
 
+		this.fireWithMethod('construct:start')
 		this.options = { ...options }
 
-		this.#fireLifecycle('construct:start')
 
 		this.#initLoadPromise()
 
@@ -83,7 +83,7 @@ export default class _AbstractComponent extends EventTarget {
 			this.data = this.options.data
 		}
 
-		this.#fireLifecycle('construct')
+		this.fireWithMethod('construct')
 	}
 
 
@@ -127,17 +127,6 @@ export default class _AbstractComponent extends EventTarget {
 		this.children[childKey] = new _constructor(options)
 	}
 
-	#fireLifecycle(event, options) {
-		const method = eventNameToMethodName(event)
-		const e = new ComponentLifecycleEvent(event, options)
-
-		if (typeof this[method] === 'function') {
-			this[method](e)
-		}
-
-		this.dispatchEvent(e)
-	}
-
 	#initLoadPromise() {
 		/** @var {Promise} */
 		this.load = new Promise((resolve, reject) => {
@@ -147,12 +136,12 @@ export default class _AbstractComponent extends EventTarget {
 			this.#loadReject = reject
 		})
 			.then(response => {
-				this.#fireLifecycle('load', { detail: { response } })
+				this.fireWithMethod('load', { detail: { response } })
 
 				return response
 			})
 			.catch(error => {
-				this.#fireLifecycle('load:fail', { detail: { error } })
+				this.fireWithMethod('load:fail', { detail: { error } })
 
 				return error
 			})
@@ -211,12 +200,12 @@ export default class _AbstractComponent extends EventTarget {
 	}
 
 	#resolveDOM() {
-		this.#fireLifecycle('resolve:start')
+		this.fireWithMethod('resolve:start')
 
 		this.#resolveElements()
 		this.#resolveSlots()
 
-		this.#fireLifecycle('resolve')
+		this.fireWithMethod('resolve')
 	}
 
 	#resolveElements() {
@@ -256,7 +245,7 @@ export default class _AbstractComponent extends EventTarget {
 	}
 
 	#templateLoad() {
-		this.#fireLifecycle('load:start')
+		this.fireWithMethod('load:start')
 
 		loadTemplate(this.constructor.templateURL)
 			.then($doc => {
@@ -271,10 +260,14 @@ export default class _AbstractComponent extends EventTarget {
 		return defaultOptions
 	}
 
+	fireWithMethod(event, options) {
+		fireWithMethod(this, this, ComponentLifecycleEvent, event, options)
+	}
+
 	mount($mount) {
 		this.$mount = $mount
 
-		this.#fireLifecycle('mount:start')
+		this.fireWithMethod('mount:start')
 
 		this.load.then(() => {
 			this.$doc = this.#$doc.cloneNode(true)
@@ -287,7 +280,7 @@ export default class _AbstractComponent extends EventTarget {
 
 			this.#mountChildren()
 
-			this.#fireLifecycle('mount')
+			this.fireWithMethod('mount')
 
 			this.#isMounted = true
 		})
