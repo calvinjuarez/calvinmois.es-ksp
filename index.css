@@ -99,12 +99,12 @@ hr[aria-label]::before {
 	display: block;
 }
 .explore-item-name {
-	flex: 1 0 auto;
-	max-width: 100%;
+	flex: 0 1 auto;
 	text-overflow: ellipsis;
+	margin-right: auto;
 }
 .explore-item-value {
-	flex: 0 0 auto;
+	flex: 0 0 1rem;
 	margin-left: 16px;
 }
 .explore-item-value:not(.explore-link *) {
