@@ -21,9 +21,4 @@ export default class Explore extends _AbstractComponent {
 			$explore: '#explore',
 		}
 	}
-
-
-	constructor() {
-		super(...arguments)
-	}
 }

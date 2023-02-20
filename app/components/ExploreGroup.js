@@ -11,11 +11,6 @@ export default class ExploreGroup extends _AbstractComponent {
 	}
 
 
-	constructor(options) {
-		super(...arguments)
-	}
-
-
 	onResolve() {
 		this.$slots.name.innerHTML = this.data.name
 	}

@@ -28,9 +28,4 @@ export default class ExploreList extends _AbstractComponent {
 			$items: '.js-explore-items',
 		}
 	}
-
-
-	constructor(options) {
-		super(...arguments)
-	}
 }
