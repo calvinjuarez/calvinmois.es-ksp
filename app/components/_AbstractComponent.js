@@ -65,6 +65,17 @@ export default class _AbstractComponent extends EventTarget {
 
 		this.options = { ...options }
 
+		if ('_root' in this.options
+		&&  (this.options._root instanceof _AbstractComponent)) {
+			this._root = this.options._root
+		}
+
+		if ('collection' in this.options) {
+			this.collection = this.options.collection
+		}
+		if ('data' in this.options) {
+			this.data = this.options.data
+		}
 
 		this.#initLoadPromise()
 
@@ -77,16 +88,17 @@ export default class _AbstractComponent extends EventTarget {
 			this.mount(this.options.$mount)
 		}
 
-		if ('collection' in this.options) {
-			this.collection = this.options.collection
-		}
-		if ('data' in this.options) {
-			this.data = this.options.data
-		}
-
 		this.fireWithMethod('construct')
 	}
 
+
+	#buildChildOptions(childKey, constructor, defaultOptions={}) {
+		if (this._root instanceof _AbstractComponent) {
+			defaultOptions._root = this._root
+		}
+
+		return this.buildChildOptions(childKey, constructor, defaultOptions)
+	}
 
 	#buildChildren() {
 		const childConstructorsEntries = Object.entries(this.childConstructors)
@@ -114,7 +126,7 @@ export default class _AbstractComponent extends EventTarget {
 			const defaultOptions = Array.isArray(data)
 				? { collection: data, index }
 				: { data, index }
-			const options = this.buildChildOptions(childKey, constructor, defaultOptions)
+			const options = this.#buildChildOptions(childKey, constructor, defaultOptions)
 			const _constructor = this.#resolveChildConstructor(constructor, options)
 
 			childSet.add(new _constructor(options))
@@ -122,7 +134,7 @@ export default class _AbstractComponent extends EventTarget {
 	}
 
 	#buildSingleChild(childKey, constructor) {
-		const options = this.buildChildOptions(childKey, constructor, {})
+		const options = this.#buildChildOptions(childKey, constructor, {})
 		const _constructor = this.#resolveChildConstructor(constructor, options)
 
 		this.children[childKey] = new _constructor(options)

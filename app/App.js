@@ -33,6 +33,9 @@ export default class App extends _AbstractComponent {
 	}
 
 
+	get _root() { return this }
+
+
 	constructor(options, reader) {
 		super(...arguments)
 
