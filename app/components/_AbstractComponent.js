@@ -1,6 +1,8 @@
 import loadTemplate from '../util/loadTemplate.js'
 import fireWithMethod from '../util/fireWithMethod.js'
 
+import _AbstractCollection from '../data/_AbstractCollection.js'
+
 
 class ComponentTemplateError extends Error {}
 class ComponentChildError extends Error {}
@@ -42,6 +44,14 @@ export default class _AbstractComponent extends EventTarget {
 	get collection() { return this.#collection }
 	set collection(collection) {
 		this.#collection = collection
+
+		if (this.#collection instanceof _AbstractCollection) {
+			this.#collection.emitter.addEventListener('update', e => {
+				this.dispatchEvent(new CustomEvent('collection:update'))
+				this.render()
+			})
+		}
+
 
 		this.dispatchEvent(new CustomEvent('collection:change'))
 		this.render()
