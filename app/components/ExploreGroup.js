@@ -11,10 +11,17 @@ export default class ExploreGroup extends _AbstractComponent {
 	}
 
 
+	#handleClick(e) {
+		e.preventDefault()
+
+		this._root.populateNextNav(this.data.value)
+	}
+
+
 	onResolve() {
 		this.$slots.name.innerHTML = this.data.name
 	}
 	onMount() {
-		this.$elements.$anchor.addEventListener('click', e => e.preventDefault())
+		this.$elements.$anchor.addEventListener('click', e => this.#handleClick(e))
 	}
 }

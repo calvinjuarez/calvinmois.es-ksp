@@ -88,4 +88,9 @@ export default class App extends _AbstractComponent {
 	onMount() {
 		this.children.upload.addEventListener('change', e => this.#handleUploadChange(e))
 	}
+
+
+	populateNextNav(collection) {
+		this.children.explore.populateNextNav(collection)
+	}
 }

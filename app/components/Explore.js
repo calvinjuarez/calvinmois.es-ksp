@@ -21,4 +21,17 @@ export default class Explore extends _AbstractComponent {
 			$explore: '#explore',
 		}
 	}
+
+
+	populateNextNav(collection) {
+		if (collection.depth < this.collection.length) {
+			this.collection = [
+				...this.collection.slice(0, collection.depth),
+				collection
+			]
+		}
+		else {
+			this.collection = [ ...this.collection, collection ]
+		}
+	}
 }
