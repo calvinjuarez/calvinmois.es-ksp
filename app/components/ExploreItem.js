@@ -7,6 +7,6 @@ export default class ExploreItem extends _AbstractComponent {
 
 	onResolve() {
 		this.$slots.name.innerHTML = this.data.name
-		this.$slots.value.innerHTML = JSON.stringify(this.data.value)
+		this.$slots.value.innerHTML = JSON.stringify(this.data.value, null, 4)
 	}
 }
